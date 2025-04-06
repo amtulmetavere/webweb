@@ -7,6 +7,7 @@ import Logo from "../assets/logo.png";
 const Header = () => {
   const [open, setOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(false);
+  const hideTimeoutRef = React.useRef(null);
 
   return (
     <motion.nav>
@@ -30,28 +31,50 @@ const Header = () => {
     
   ))}
 {/* Services Dropdown */}
-<li className="relative list-none group">
+<li
+  className="relative list-none"
+  onMouseEnter={() => {
+    clearTimeout(hideTimeoutRef.current);
+    setOpenDropdown(true);
+  }}
+  onMouseLeave={() => {
+    hideTimeoutRef.current = setTimeout(() => {
+      setOpenDropdown(false);
+    }, 200); // 200ms delay before hiding
+  }}
+>
   <button
     className="relative px-5 py-2 font-semibold rounded-[25px] cursor-pointer overflow-hidden
       before:absolute before:left-0 before:top-0 before:w-full before:h-full before:bg-[#e3b843] before:rounded-[25px] 
       before:transition-all before:duration-300 before:scale-x-0 before:origin-left
-      group-hover:before:scale-x-100 group-hover:text-white transition-colors duration-300"
+      hover:before:scale-x-100 hover:text-white transition-colors duration-300"
   >
     <span className="relative z-10">Services ▼</span>
   </button>
 
-  {/* Dropdown Menu with smooth transition from top to bottom */}
-  <ul className="absolute left-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg opacity-0 translate-y-4 transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:translate-y-0">
-    {/* Map through an array of services */}
-    {["Web Development", "Mobile App Development", "UI/UX Design", "SEO Optimization", "Digital Marketing"].map((service, index) => (
-      <li key={index}>
-        <a href="#" className="block px-4 py-2 text-gray-900 hover:bg-gray-900 hover:text-white rounded-md">
-          {service}
-        </a>
-      </li>
-    ))}
-  </ul>
+  {openDropdown && (
+    <ul className="absolute left-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg transition-all duration-300 ease-in-out">
+      {[
+        "Web Development",
+        "Mobile App Development",
+        "UI/UX Design",
+        "SEO Optimization",
+        "Digital Marketing",
+      ].map((service, index) => (
+        <li key={index}>
+          <a
+            href="#"
+            className="block px-4 py-2 text-gray-900 hover:bg-gray-900 hover:text-white rounded-md"
+          >
+            {service}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
 </li>
+
+
 
 
 
